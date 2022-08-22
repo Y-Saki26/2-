@@ -1,0 +1,171 @@
+\documentclass[dvipdfmx,autodetect-engine,12pt,fleqn]{jsarticle}
+% fleqn: 数式左寄せ
+\input{preamble}
+
+\title{$\sin(\sin x)$の級数展開}
+\author{Yuki Sakishita}
+\date{\today}
+
+%\DeclarePairedDelimiter{}{}{}
+
+\begin{document}
+\maketitle
+
+\setcounter{section}{-1}
+\section{Introduction}
+$\sin(\sin x)$のような2重の三角関数はフーリエ級数展開表示を求めようとしてもMathematicaでは答えが得られないが，実際は
+\begin{gather*}
+    \cos\rbra*{\xi \sin\theta} = J_0(\xi) + 2\sum_{m=1}^\infty J_{2m}(\xi)\cos\rbra{2m\theta}\\
+    \sin\rbra*{\xi \sin\theta} = 2\sum_{m=1}^\infty J_{2m-1}(\xi)\sin\rbra{(2m-1)\theta}
+\end{gather*}
+という公式が知られている．
+
+この等式の導出を示し，応用例として交流Josephson効果を紹介する．
+
+\section{Bessel関数}
+パラメータ$\alpha$（次数と呼ぶ）をもつBessel微分方程式
+\begin{equation}
+\label{eq:bessel-equation}
+    x^2\dv[2]{y}{x}+x\dv{y}{x}+(x^2-\alpha^2)y=0
+\end{equation}
+の解$J_\alpha(x)$, $Y_\alpha(x)$を第1種，第2種Bessel関数という．前者は正則，後者は$x=0$で特異性を持つ．
+$J_\alpha(x)$はべき級数で記述できる．
+\begin{equation}
+\label{eq:bessel-func-as-series}
+    J_\alpha(x)=\sum_{m=0}^\infty \frac{(-1)^m}{m!\Gamma(m+a+1)} \qty(\frac{x}{2})^{2m+\alpha}
+\end{equation}
+実際に代入してみれば方程式\eqref{eq:bessel-equation}を満たすことがわかる．
+整数次数のBessel関数は\reffig{bessel-plot}のように振動しながら減衰していくものになる．
+
+\addFigure[0.8\linewidth]{bessel-plot.png}{Bessel関数のプロット例．}{bessel-plot}
+
+歴史的には，第1種Bessel関数は惑星軌道に関する微分方程式の解として
+\begin{equation}
+    J_n(x)=\frac1\pi\int_0^1 \cos(nz-x\sin z)\dd z
+\end{equation}
+という積分表示で得られた定義が初出である．
+これも同じく方程式\eqref{eq:bessel-equation}を満たすことが確認できる（参考：\cite{bessel}）．
+
+整数次数の第1種Bessel関数の母関数は
+\begin{equation}
+\label{eq:bessel-gen-func}
+    \sum_{m=-\infty}^\infty J_m(x)t^m = \exp\sbra*{\frac{x}{2}\qty(t-\frac{1}{t})}
+\end{equation}
+と表されることが知られている．
+実際，
+\begin{equation}
+\begin{split}
+    \exp\sbra*{\frac{x t}{2}}\exp\sbra*{\frac{x}{2t}}
+    &=\qty{\sum_{k=0}^\infty \frac{1}{k!}\qty(\frac{x t}{2})^k} \qty{\sum_{k=0}^\infty \frac{1}{k!}\qty(-\frac{x}{2t})^k}\\
+    &=\sum_{k=0}^\infty \sum_{l=0}^\infty \frac{1}{k! l!}\qty(\frac{x}{2})^k \qty(-\frac{x}{2})^l t^{k-l}
+\end{split} 
+\end{equation}
+$m=k-l$とおいて
+\begin{equation}
+\begin{split}
+    \phantom{\exp\sbra*{\frac{x t}{2}}\exp\sbra*{\frac{x}{2t}}}
+    &=\sum_{l=0}^\infty \sum_{m=-k}^\infty \frac{1}{(l+m)! m!}\qty(\frac{x}{2})^{l+m} \qty(-\frac{x}{2})^l t^m\\
+    &=\sum_{m=-\infty}^\infty \sum_{l=0}^\infty \frac{(-1)^l}{(l+m)! m!}\qty(\frac{x}{2})^{2l+m} t^m
+\end{split} 
+\end{equation}
+式\eqref{eq:bessel-func-as-series}より$\sum_{l=0}^\infty \frac{(-1)^l}{(l+m)! m!}(\frac{x}{2})^{2l+m} = J_m(x)$であるから，式\eqref{eq:bessel-gen-func}が示された．
+
+\section{2重三角関数}
+\textreferencemark 一般に「2重三角関数」というと周期を多重周期性に拡張した多重三角関数を指すので注意．
+
+$\sin(\sin(x))$のような三角関数を2重適用した関数をより扱いやすい形に展開する．
+母関数
+\begin{equation*}
+    \exp\sbra*{\frac{\xi}{2}\qty(t-\frac{1}{t})} = \sum_{n=-\infty}^\infty J_n(\xi)t^n
+\end{equation*}
+で$t=e^{i\theta}$とおくと
+\begin{equation}
+\begin{split}
+    \exp\rbra{i\xi \sin\theta} &= \sum_{n=-\infty}^\infty J_n(\xi)e^{in\theta}\\
+    \cos\rbra{\xi \sin\theta}+i\sin\rbra{\xi \sin\theta} &= \sum_{n=-\infty}^\infty J_n(\xi)\rbra{\cos{n\theta}+i\sin{n\theta}}
+\end{split}
+\end{equation}
+各項の虚部を比較すると
+\begin{equation}
+\begin{split}
+    \cos\rbra*{\xi \sin\theta} &= \sum_{n=-\infty}^\infty J_n(\xi)\cos\rbra{n\theta}\\
+    &= J_0(\xi) + \sum_{n=1}^\infty \qty(J_n(\xi)+J_{-n}(\xi))\cos\rbra{n\theta}\\
+    &= J_0(\xi) + 2\sum_{m=1}^\infty J_{2m}(\xi)\cos\rbra{2m\theta}
+\end{split}
+\end{equation}
+ただし，$J_{-n}(\xi)=(-1)^nJ_n(\xi)$である．
+同様に，実部を比較すると，
+\begin{equation}
+\begin{split}
+    \sin\rbra*{\xi \sin\theta} &= \sum_{n=-\infty}^\infty J_n(\xi)\sin\rbra{n\theta}\\
+    &= J_0(\xi)\cdot 0 + \sum_{n=1}^\infty \qty(J_n(\xi)-J_{-n}(\xi))\sin\rbra{n\theta}\\
+    &= 2\sum_{m=1}^\infty J_{2m-1}(\xi)\sin\rbra{(2m-1)\theta}
+\end{split}
+\end{equation}
+
+定数項が存在する場合は
+\begin{equation}
+\label{eq:bessel-series-sinsin}
+\begin{split}
+    \sin\rbra*{\eta + \xi \sin\theta} &= \sin(\eta)\cos(\xi\sin\theta)+\cos(\eta)\sin(\xi\sin\theta)\\
+    &= \sin(\eta)\sum_{n=-\infty}^\infty J_n(\xi)\cos(n\theta) + \cos(\eta)\sum_{n=-\infty}^\infty J_n(\xi)\sin(n\theta)\\
+    &= \sum_{n=-\infty}^\infty J_n(\xi) \qty{\sin(\eta)\cos(n\theta) + \cos(\eta)\sin(n\theta)}\\
+    &= \sum_{n=-\infty}^\infty J_n(\xi) \sin\rbra*{\eta + n\theta}
+\end{split}
+\end{equation}
+のように変形できる．
+
+\section{Josephson効果}
+これを用いた例を示す．
+2つの超伝導体を薄い絶縁体などを挟んで近づけた場合，Josephson効果と呼ばれる，絶縁されているにも関わらず電流が流れる効果が発生する．
+
+量子力学的考察から，流れる電流$I$，2つの超伝導体の電位差$V$は，2つの超伝導体のBCS波動関数の位相差$\phi$を用いて
+\begin{gather}
+    I(t)=I_{\text{c}}\sin\phi(t)\\
+    \frac{4\pi e}{h}V(t)=\dv{\phi(t)}{t}
+\end{gather}
+と表されることが導かれる．
+ここで$I_{\text{c}}$は接合の材質・形状や温度によって決まる定数，$e$は電気素量，$h$はプランク定数である．
+
+このような接合に外部電源によるバイアス電圧$V_0$とマイクロ波照射による振動電圧$v_{\text{rf}}\cos(2\pi ft)$を印加する．
+\begin{equation}
+    V(t)=V_0+v_{\text{rf}}\cos(2\pi ft)
+\end{equation}
+ここで$V_0$, $v_{\text{rf}}$はバイアス電圧とマイクロ波の強度，$f$はマイクロ波の周波数，を表す定数である．
+このときの電流は
+\begin{equation}
+    \phi(t) = \int V\dd t = \phi_0 + \frac{4\pi e}{h}V_0 t+\frac{4\pi e}{h}\frac{v_{\text{rf}}}{2\pi f}\sin(2\pi ft)
+\end{equation}
+\begin{equation}
+    I(t) = I_c\sin\rbra*{\phi_0 + \frac{4\pi e}{h}V_0 t+\frac{4\pi e}{h}\frac{v_{\text{rf}}}{2\pi f}\sin(2\pi ft)}
+\end{equation}
+のように二重の三角関数で表される．
+式\eqref{eq:bessel-series-sinsin} のBessel級数による展開を用いると，
+\begin{equation}
+    I(t) = I_{\text{c}}\sum_{n=-\infty}^\infty J_n\rbra*{\frac{2e v_{\text{rf}}}{hf}}
+    \sin\rbra*{\phi_0 + \qty(\frac{4\pi e}{h}V_0 + 2\pi n f) t}
+\end{equation}
+と表せる．
+電流測定では，サンプリング周期に渡った平均値が観測される．
+一般的な電流測定ではサンプリング周波数は数\si{kHz}程度であるのに対し，摂動項の周波数$f$は数100 \si{MHz}～数100 \si{GHz}と十分に小さい．
+すなわち，$I(t)$の波数$\frac{4\pi e}{h}V_0 + 2\pi n f$は$V_0$が$-hf/2e$の定数倍に近い非常に狭い領域を取る場合を除いて長時間の平均により0になる．
+すなわち，Josephson定数$K_{\text{J}}=2e/h$を用いて
+\begin{equation}
+    I(t)=\begin{cases}
+        I_{\text{c}} J_n\rbra*{\frac{ v_{\text{rf}}K_{\text{J}}}{f}}\sin(\phi_0+\omega t) & \abs{V_0+nf/K_{\text{J}}}\lesssim f_0/K_{\text{J}}\\
+        0 & \text{otherwise}
+    \end{cases}
+\end{equation}
+のように表せる．
+$f_0$は測定のサンプリング周波数で，例えば$f_0=\SI{1}{kHz}$，$f=\SI{1}{GHz}$の場合，$n=1$となる$V_0$の相対誤差は\num{1e-6}程度である．
+これはすなわち，バイアス電圧$V_0$を掃引し電流を計測すると，電圧が$f/K_{\text{J}}$の整数倍のときのみ，高さ$J_n\rbra{{v_{\text{rf}}}K_{\text{J}}/{f}}$のスパイク状の振動電流が流れ，それ以外では0となるようなI-V特性が観測されることを意味する．
+
+このような効果を交流Josephson効果と呼ぶ．
+スパイクの間隔$f/K_{\text{J}}$は物理定数$K_{\text{J}}=\SI{483597.848416983 }{\dots GHz/V}$と照射するマイクロ波の振動数$f$のみによって決まるため，この効果は電圧標準として用いられている．
+
+\begin{thebibliography}{99}
+  \bibitem{bessel} 「ニュートン法で求めるベッセル関数の零点｜藤澤篤仁（ふじぽん）｜note」, note（ノート）. \url{https://note.com/atz2238/n/n3e2a0fb0bfdb} (参照 2022年8月22日).
+  \bibitem{josephson} C. C. Grimes and S. Shapiro, “Millimeter-Wave Mixing with Josephson Junctions,” Phys. Rev., vol. 169, no. 2, pp. 397–406, May 1968, doi: 10.1103/PhysRev.169.397.
+\end{thebibliography}
+
+\end{document}

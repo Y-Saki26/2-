@@ -1,0 +1,26 @@
+%\usepackage[dvipdfmx]{hyperref}
+%\usepackage{pxjahyper}
+%\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+\usepackage{siunitx}
+\usepackage[version=4]{mhchem}
+\usepackage{physics} % `\qty`の名前衝突のためsiunitxのあとに読み込む
+\usepackage{url}
+\usepackage{comment}
+
+% align, gather 環境でページをまたがせる
+\allowdisplaybreaks[4]
+
+% https://mathlandscape.com/declarepaireddelimiter/#toc3
+%\DeclarePairedDelimiter{\abs}{\lvert}{\rvert} % | | absolute value
+%\DeclarePairedDelimiter{\norm}{\lVert}{\rVert} % || || norm
+\DeclarePairedDelimiter{\rbra}{\lparen}{\rparen} % () round brackets
+\DeclarePairedDelimiter{\cbra}{\lbrace}{\rbrace} % {} curly brackets
+\DeclarePairedDelimiter{\sbra}{\lbrack}{\rbrack} % [] square brackets
+\DeclarePairedDelimiter{\abra}{\langle}{\rangle} % < > angle brackets
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor} % floor function
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil} % ceil function
+
+\input{user_command}
